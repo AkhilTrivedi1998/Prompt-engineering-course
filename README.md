@@ -43,25 +43,25 @@ Tokenization involves splitting text into tokens and often includes normalizatio
 
 For a transformer-based model like BERT, the tokenization process might include:
 
-**Splitting**: Breaking down text into tokens.
-**Mapping**: Converting tokens to unique IDs using a vocabulary.
-**Embedding**: Mapping token IDs to dense vectors that represent their meaning in a high-dimensional space.
+* **Splitting**: Breaking down text into tokens.
+* **Mapping**: Converting tokens to unique IDs using a vocabulary.
+* **Embedding**: Mapping token IDs to dense vectors that represent their meaning in a high-dimensional space.
 
 Here's a simple example with BERT tokenization:
 
-**Input Sentence**: "The quick brown fox jumps over the lazy dog."
-**Tokenized**: ["the", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog"]
-**IDs**: [101, 1996, 4248, 2829, 4419, 2058, 1996, 13971, 3899, 102] (IDs are hypothetical and represent unique tokens in BERT's vocabulary)
-**Embedding**: Each ID is converted into a vector of fixed dimensions, representing its position in the model's learned space.
+* **Input Sentence**: "The quick brown fox jumps over the lazy dog."
+* **Tokenized**: ["the", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog"]
+* **IDs**: [101, 1996, 4248, 2829, 4419, 2058, 1996, 13971, 3899, 102] (IDs are hypothetical and represent unique tokens in BERT's vocabulary)
+* **Embedding**: Each ID is converted into a vector of fixed dimensions, representing its position in the model's learned space.
 
 ### Illustration of different tokenization processes
 
 Here's a diagram illustrating the tokenization process:
 
-**Original Sentence**: "Natural Language Processing is fascinating."
-**Word Tokenized**: ["Natural", "Language", "Processing", "is", "fascinating", "."]
-**Subword Tokenized**: ["Natural", "Lang", "##uage", "Processing", "is", "fasc", "##inating", "."]
-**Character Tokenized**: ["N", "a", "t", "u", "r", "a", "l", "L", "a", "n", "g", "u", "a", "g", "e", "P", "r", "o", "c", "e", "s", "s", "i", "n", "g", " ", "i", "s", " ", "f", "a", "s", "c", "i", "n", "a", "t", "i", "n", "g", "."]
+* **Original Sentence**: "Natural Language Processing is fascinating."
+* **Word Tokenized**: ["Natural", "Language", "Processing", "is", "fascinating", "."]
+* **Subword Tokenized**: ["Natural", "Lang", "##uage", "Processing", "is", "fasc", "##inating", "."]
+* **Character Tokenized**: ["N", "a", "t", "u", "r", "a", "l", "L", "a", "n", "g", "u", "a", "g", "e", "P", "r", "o", "c", "e", "s", "s", "i", "n", "g", " ", "i", "s", " ", "f", "a", "s", "c", "i", "n", "a", "t", "i", "n", "g", "."]
 
 GPT models use **subword tokenization** to tokenize text into subword units. This allows them to handle a diverse range of vocabulary efficiently, maintain a manageable vocabulary size, and generalize to unseen words by breaking them into known subwords.
 
@@ -86,3 +86,47 @@ There are two phases to training a LLM
 ### Reversal Curse
 
 This is the phenomenon where LLM is trained to know A = B but because it is not trained specifically to know B = A, it is not able to decipher it intuitively .
+
+**Standard Prompt** - a prompt consisting of only a question or instruction
+
+**System message/System prompt** - is used to communicate instructions or provide context to the model at the beginning of a conversation. It is displayed in a different format compared to user messages, helping the model understand its role in the conversation.
+
+**Context** - the parts of a written or spoken statements that precede or follow a specific word or passage,usually influencing its meaning or effect. To get a proper response from the LLM, it is important useful context to it. General rule is:
+***More Context = Better Result***, but this is not always true.  
+LLM has no memory of its own, everytime you message the entire previous conversation is sent along with it. This acts as context. But there is a **token limit** for each LLM. If you go beyone that token limit, it will not end the conversation instead it will shift the **context window**, which might lead to loss of important context. This is an example where **More Context != Better Result**
+
+### Key Takeaways about Context
+
+1.  Research has shown that model performance is highest when relevant information occurs at the beginning or at the end of the context window. Model performs worst when relevant context is in the middle (in some cases even worse than when no context is provided), this phenomenon is called **Lost in the middle** . It is somewhat similar to the working of human brain.
+
+2. Model performance decreases as context grows longer (model strugles to retrieve relevant information out of longer context). So, we should always aim to provide only the context which is required.
+
+3. Larger context models are not necessarly better at using context than Shorter context models. Therefore, while judging our focus should be on how much context is required rather than how much context does the model allow.
+
+### Personas and Roles
+
+* Personas help a model give you more accurate outputs related to the role specified by the persona.
+* Personas are nothing but additional context
+* General Rule - always provide model with a persona relevant to you task.
+* Personas can make LLMs more intuitive (and engaging) to interact with. You can give personas a unique tone, style and voice making it both fun and functional.
+
+### Custom Instructions
+
+It is a feature of ChatGPT plus. It is not a system message but it gets passed alongwith the system message, thus acting like a sub-system instruction providing context to the LLM. We can describe our characteristics as well as persona of chatgpt which then gets passed on as a custum instruction.
+
+**IMPORTANT** - LLMs like chatgpt are not good at keeping secrets. You can pass in instructions or prompts in ways which will manipulate or push LLMs into revealing the secrets.
+
+**User Message** - It is nothing but the input passed to the LLM.
+
+#### Proper way of writing user message
+
+1. Write clear and specific instructions. Ex -
+    * statement:
+        *    Write an article on black hole.
+    * More clear and specific:
+        *    Write a 1000 word article detailing the progress in imaging black hole from 2010 onwards.
+    * Even clearer:
+        *    Write a 1000 word article detailing the progress in imaging black hole from 2010 onwards. The article should be written in an engaging tone, and should include techinal details that are explained so that a person with no previous astronomy knowledge could understand.
+
+2. Use **Delimiters** to provide structure to your prompt.
+    * Delimiter is a sequence of one or more characters that specify the boundary between separate, independent regions in text. LLMs are trained on code containing data with extensive use of delimiters, so when we use delimiters in our prompts the LLMs is able to recognize the delimiter pattern the understand the instructions more clearly.
