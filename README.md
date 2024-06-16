@@ -128,5 +128,37 @@ It is a feature of ChatGPT plus. It is not a system message but it gets passed a
     * Even clearer:
         *    Write a 1000 word article detailing the progress in imaging black hole from 2010 onwards. The article should be written in an engaging tone, and should include techinal details that are explained so that a person with no previous astronomy knowledge could understand.
 
-2. Use **Delimiters** to provide structure to your prompt.
-    * Delimiter is a sequence of one or more characters that specify the boundary between separate, independent regions in text. LLMs are trained on code containing data with extensive use of delimiters, so when we use delimiters in our prompts the LLMs is able to recognize the delimiter pattern the understand the instructions more clearly.
+2. Use **Delimiters** to provide structure to your prompt.  
+    Delimiter is a sequence of one or more characters that specify the boundary between separate, independent regions in text. LLMs are trained on code containing data with extensive use of delimiters, so when we use delimiters in our prompts the LLMs is able to recognize the delimiter pattern the understand the instructions more clearly.  
+    Example instruction:  
+    *   ```
+            Using the provided CSV like data, list the names of individuals who have 'Python' listed as one of their skills.  
+            ###  
+            Name | Age | Occupation, Location; Skills
+            John Doe | 32 | Software Engineer, San Francisco; Python, javascript, SQL
+            Jane Smith | 28 | Data Scientist, New York; R, Python, Machine Learning
+            Ella Brown | 40 | Web Developer, Los Angelos; HTML, CSS, Javascript  
+        ```
+    Result:  
+    *   ```
+            John Doe  
+            Jane Smith  
+        ```
+    
+    **Now, change the age column value of Ella Brown to python, let's see what happens:**    
+    
+    Example instruction:  
+    *   ```
+            Using the provided CSV like data, list the names of individuals who have 'Python' listed as one of their skills.  
+            ###  
+            Name | Age | Occupation, Location; Skills
+            John Doe | 32 | Software Engineer, San Francisco; Python, javascript, SQL
+            Jane Smith | 28 | Data Scientist, New York; R, Python, Machine Learning
+            Ella Brown | Python | Web Developer, Los Angelos; HTML, CSS, Javascript  
+        ```
+    Result:  
+    *   ```
+            John Doe  
+            Jane Smith  
+        ```
+    Still the result is John Doe and Jane Smith, this means that LLM is recognizing the delimiter pattern and is considering Age and Skills as seperate columns. It is looking for Python only within the Skills column. The delimiter above are- **'\###', '|', ',' , ';'**
